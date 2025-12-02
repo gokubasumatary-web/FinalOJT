@@ -1,5 +1,5 @@
 // storage stuff for saving reminders
-
+// saving remainder
 // load saved reminders
 function loadReminders() {
   var saved = localStorage.getItem('reminders');
