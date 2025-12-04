@@ -1,19 +1,21 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>My Reminders</title>
   <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
   <div class="dashboard">
     <div class="main">
       <header class="topbar">
-        <div class="logo">My Reminders ⏰</div>
-        <div class="topbar-subtitle">Continue getting alerts, even when you're away</div>
-        <!-- <div class="hindi">HAR SAMAY APKE SATH!!!!</div> -->
+        <div class="logo">My Reminders</div>
+        <div class="topbar-subtitle">Get notified, even in the background</div>
         <button class="btn-permission" id="btn-permission">Enable Notifications</button>
+        <button class="btn-permission" id="btn-test-notification" style="margin-left: 10px;">Test Notification</button>
       </header>
 
       <section class="cards-grid">
@@ -34,7 +36,7 @@
           <form id="reminder-form" class="reminder-form">
             <div class="field">
               <label for="reminder-title">Reminder</label>
-              <input id="reminder-title" type="text" required placeholder="e.g...study at 9 pm">
+              <input id="reminder-title" type="text" required placeholder="e.g.. you want to study at 9pm">
             </div>
             <div class="field">
               <label for="reminder-time">Time</label>
@@ -65,10 +67,11 @@
     </div>
   </div>
 
-  <script src="notifications.js"></script> -->
   <script src="storage.js"></script>
+  <script src="notifications.js"></script>
   <script src="timers.js"></script>
   <script src="ui.js"></script>
-  <script src="app.js"></script> 
+  <script src="app.js"></script>
 </body>
+
 </html>
