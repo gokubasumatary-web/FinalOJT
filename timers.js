@@ -1,59 +1,40 @@
-// timer stuff using setTimeout
+// timer stuff using setInterval polling
+// This is more reliable for background tabs than setTimeout
 
-// set timer for reminder
-function setTimer(reminder) {
-  if (!reminder.active) return;
+var timerInterval = null;
 
-  var delay = reminder.timestamp - Date.now();
+// start the polling loop
+function startTimerLoop() {
+  if (timerInterval) clearInterval(timerInterval);
 
-  if (delay <= 0) {
-    reminder.active = false;
-    saveReminders();
-    return;
-  }
-
-  var timer = setTimeout(function () {
-    triggerReminder(reminder);
-  }, delay);
-
-  timers.push({ id: reminder.id, timer: timer });
+  // check every second
+  timerInterval = setInterval(function () {
+    checkReminders();
+  }, 1000);
 }
 
-// set all the timers
-function setAllTimers() {
-  // clear old timers
-  for (var i = 0; i < timers.length; i++) {
-    clearTimeout(timers[i].timer);
-  }
-  timers = [];
+// check if any reminders are due
+function checkReminders() {
+  var now = Date.now();
+  var changed = false;
 
-  // set new ones
   for (var i = 0; i < reminders.length; i++) {
-    if (reminders[i].active && reminders[i].timestamp > Date.now()) {
-      setTimer(reminders[i]);
+    var r = reminders[i];
+    if (r.active && r.timestamp <= now) {
+      triggerReminder(r);
+      changed = true;
     }
   }
-}
 
-// clear timer
-function clearTimer(id) {
-  for (var i = 0; i < timers.length; i++) {
-    if (timers[i].id === id) {
-      clearTimeout(timers[i].timer);
-      timers.splice(i, 1);
-      break;
-    }
-  }
+  // triggerReminder handles saving and rendering, so we don't need to do it here
 }
 
 // trigger the reminder
 function triggerReminder(reminder) {
   showNotification('Reminder!', reminder.title);
-  // playNotificationSound is called inside showNotification now, so we don't need to call it twice
-  // but just in case showNotification logic changes, we can rely on showNotification handling it.
 
   reminder.active = false;
-  clearTimer(reminder.id);
   saveReminders();
   render();
 }
+
