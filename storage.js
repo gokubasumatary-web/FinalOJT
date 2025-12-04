@@ -6,12 +6,12 @@ function loadReminders() {
   if (saved) {
     reminders = JSON.parse(saved);
     // remove expired ones
-    reminders = reminders.filter(function(r) {
+    reminders = reminders.filter(function (r) {
       return r.timestamp > Date.now();
     });
     saveReminders();
   }
-  setAllTimers();
+  // setAllTimers(); // No longer needed with polling loop
 }
 
 // save to localstorage
@@ -19,38 +19,63 @@ function saveReminders() {
   localStorage.setItem('reminders', JSON.stringify(reminders));
 }
 
-// add new reminder
+// add new reminder or update existing
 function addReminder() {
   var title = document.getElementById('reminder-title').value;
   var time = document.getElementById('reminder-time').value;
-  
+
   if (!title || !time) {
-    alert('Please fill all fields');
+    showToast('Please fill all fields', 'error');
     return;
   }
-  
+
   var timestamp = new Date(time).getTime();
-  
+
   if (timestamp <= Date.now()) {
-    alert('Please select a future time');
+    showToast('Please select a future time', 'error');
     return;
   }
-  
-  // make reminder object
-  var reminder = {
-    id: Date.now() + '-' + Math.random(),
-    title: title,
-    timestamp: timestamp,
-    active: true
-  };
-  
-  reminders.push(reminder);
+
+  if (editingId) {
+    // update existing
+    var index = reminders.findIndex(function (r) { return r.id === editingId; });
+    if (index !== -1) {
+      reminders[index].title = title;
+      reminders[index].timestamp = timestamp;
+      reminders[index].active = true;
+
+      // clearTimer(editingId);
+      // setTimer(reminders[index]);
+
+      showToast('Reminder Updated', 'success');
+    }
+    editingId = null;
+    document.querySelector('#reminder-form button[type="submit"]').textContent = 'Set Reminder';
+  } else {
+    // create new
+    var reminder = {
+      id: Date.now() + '-' + Math.random(),
+      title: title,
+      timestamp: timestamp,
+      active: true
+    };
+
+    reminders.push(reminder);
+    // setTimer(reminder);
+
+    // check notification status for popup
+    if (Notification.permission === 'granted') {
+      showToast('Reminder Set! You will be notified.', 'success');
+    } else {
+      showToast('Reminder Set! Enable notifications to get alerted.', 'warning');
+    }
+  }
+
   saveReminders();
-  setTimer(reminder);
-  
+
   // clear the form
   document.getElementById('reminder-form').reset();
-  
+
   render();
 }
 
@@ -63,11 +88,11 @@ function deleteReminder(id) {
       break;
     }
   }
-  
+
   if (index !== -1) {
     lastDeleted = reminders[index];
     reminders.splice(index, 1);
-    clearTimer(id);
+    // clearTimer(id);
     saveReminders();
     render();
   }
@@ -77,7 +102,7 @@ function deleteReminder(id) {
 function undoDelete() {
   if (lastDeleted) {
     reminders.push(lastDeleted);
-    setTimer(lastDeleted);
+    // setTimer(lastDeleted);
     saveReminders();
     lastDeleted = null;
     render();
