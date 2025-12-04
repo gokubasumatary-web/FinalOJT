@@ -88,6 +88,7 @@ select {
   font-size: 32px;
   font-weight: 700;
   background: linear-gradient(135deg, var(--primary), var(--accent));
+  background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   margin-bottom: 8px;
@@ -170,6 +171,7 @@ select {
   font-size: 24px;
   margin-bottom: 8px;
   background: linear-gradient(to right, #fff, #ccc);
+  background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent
 }
