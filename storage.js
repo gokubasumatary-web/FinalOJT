@@ -1,5 +1,5 @@
 // storage stuff for saving reminders
-// saving remainder
+
 // load saved reminders
 function loadReminders() {
   var saved = localStorage.getItem('reminders');
@@ -11,7 +11,7 @@ function loadReminders() {
     });
     saveReminders();
   }
-  setAllTimers();
+  // setAllTimers(); // No longer needed with polling loop
 }
 
 // save to localstorage
@@ -44,8 +44,8 @@ function addReminder() {
       reminders[index].timestamp = timestamp;
       reminders[index].active = true;
 
-      clearTimer(editingId);
-      setTimer(reminders[index]);
+      // clearTimer(editingId);
+      // setTimer(reminders[index]);
 
       showToast('Reminder Updated', 'success');
     }
@@ -61,7 +61,7 @@ function addReminder() {
     };
 
     reminders.push(reminder);
-    setTimer(reminder);
+    // setTimer(reminder);
 
     // check notification status for popup
     if (Notification.permission === 'granted') {
@@ -92,7 +92,7 @@ function deleteReminder(id) {
   if (index !== -1) {
     lastDeleted = reminders[index];
     reminders.splice(index, 1);
-    clearTimer(id);
+    // clearTimer(id);
     saveReminders();
     render();
   }
@@ -102,7 +102,7 @@ function deleteReminder(id) {
 function undoDelete() {
   if (lastDeleted) {
     reminders.push(lastDeleted);
-    setTimer(lastDeleted);
+    // setTimer(lastDeleted);
     saveReminders();
     lastDeleted = null;
     render();
